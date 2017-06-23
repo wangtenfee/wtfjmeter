@@ -34,6 +34,8 @@ public class CSVDataSetBeanInfo extends BeanInfoSupport {
     private static final String STOPTHREAD = "stopThread";           //$NON-NLS-1$
     private static final String QUOTED_DATA = "quotedData";          //$NON-NLS-1$
     private static final String SHAREMODE = "shareMode";             //$NON-NLS-1$
+    
+    private static final String LINENO = "linenumber";
 
     // Access needed from CSVDataSet
     static final String[] SHARE_TAGS = new String[3];
@@ -52,13 +54,18 @@ public class CSVDataSetBeanInfo extends BeanInfoSupport {
         super(CSVDataSet.class);
 
         createPropertyGroup("csv_data",             //$NON-NLS-1$
-                new String[] { FILENAME, FILE_ENCODING, VARIABLE_NAMES, DELIMITER, QUOTED_DATA, RECYCLE, STOPTHREAD, SHAREMODE });
+                new String[] { FILENAME,LINENO, FILE_ENCODING, VARIABLE_NAMES, DELIMITER, QUOTED_DATA, RECYCLE, STOPTHREAD, SHAREMODE });
 
         PropertyDescriptor p = property(FILENAME);
         p.setValue(NOT_UNDEFINED, Boolean.TRUE);
         p.setValue(DEFAULT, "");        //$NON-NLS-1$
         p.setValue(NOT_EXPRESSION, Boolean.TRUE);
 
+        p = property(LINENO);  
+        p.setValue(NOT_UNDEFINED, Boolean.TRUE);  
+        p.setValue(DEFAULT, "");        //$NON-NLS-1$  
+        p.setValue(NOT_EXPRESSION, Boolean.TRUE);
+        
         p = property(FILE_ENCODING);
         p.setValue(NOT_UNDEFINED, Boolean.TRUE);
         p.setValue(DEFAULT, "");        //$NON-NLS-1$

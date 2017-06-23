@@ -77,6 +77,8 @@ public class CSVDataSet extends ConfigTestElement
 
     private transient String filename;
 
+    private transient String linenumber;
+    
     private transient String fileEncoding;
 
     private transient String variableNames;
@@ -192,11 +194,17 @@ public class CSVDataSet extends ConfigTestElement
         // TODO: fetch this once as per vars above?
         JMeterVariables threadVars = context.getVariables();
         String[] lineValues = {};
+        String line = "";
         try {
             if (getQuotedData()) {
                 lineValues = server.getParsedLine(alias, recycle, firstLineIsNames, delim.charAt(0));
             } else {
-                String line = server.readLine(alias, recycle, firstLineIsNames);
+                //String line = server.readLine(alias, recycle, firstLineIsNames);
+                if (getLinenumber() == null||getLinenumber().equals("")) {
+                	line = server.readLine(alias, recycle, firstLineIsNames);
+				}else{
+					line = server.readLine(alias, recycle, firstLineIsNames,getLinenumber());
+				}
                 lineValues = JOrphanUtils.split(line, delim, false);
             }
             for (int a = 0; a < vars.length && a < lineValues.length; a++) {
@@ -310,4 +318,14 @@ public class CSVDataSet extends ConfigTestElement
     public void setShareMode(String value) {
         this.shareMode = value;
     }
+
+	public String getLinenumber() {
+		return linenumber;
+	}
+
+	public void setLinenumber(String linenumber) {
+		this.linenumber = linenumber;
+	}
+
+    
 }

@@ -365,6 +365,47 @@ public class FileServer {
         throw new IOException("File never reserved: "+filename);
     }
 
+    public synchronized String readLine(String filename, boolean recycle, 
+            boolean firstLineIsNames,String lineNumber) throws IOException {
+        FileEntry fileEntry = files.get(filename);
+        
+        String line = "";
+        BufferedReader reader = null;
+        
+        if (fileEntry != null) {
+            if (fileEntry.inputOutputObject == null) {
+                fileEntry.inputOutputObject = createBufferedReader(fileEntry);
+                
+                reader = (BufferedReader) fileEntry.inputOutputObject;
+                if (!lineNumber.equals("")) {
+					for(int i=0;i< Integer.parseInt(lineNumber)-1;i++){
+						reader.readLine();
+					}
+				}
+                
+            } else if (!(fileEntry.inputOutputObject instanceof Reader)) {
+                throw new IOException("File " + filename + " already in use");
+            }
+//            BufferedReader reader = (BufferedReader) fileEntry.inputOutputObject;
+//            String line = reader.readLine();
+            reader = (BufferedReader) fileEntry.inputOutputObject;
+            line = reader.readLine();
+            if (line == null && recycle) {
+                reader.close();
+                reader = createBufferedReader(fileEntry);
+                fileEntry.inputOutputObject = reader;
+                if (firstLineIsNames) {
+                    // read first line and forget
+                    reader.readLine();
+                }
+                line = reader.readLine();
+            }
+            if (log.isDebugEnabled()) { log.debug("Read:"+line); }
+            return line;
+        }
+        throw new IOException("File never reserved: "+filename);
+    }
+    
     /**
      * 
      * @param alias the file name or alias
